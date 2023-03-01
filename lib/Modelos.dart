@@ -16,3 +16,9 @@ class ModeloArcoCircular{
     double distancia,r;
     ModeloArcoCircular(this.nodopartida,this.nodollegada, this.distancia, this.r);
 }
+
+class MatrizAdya{
+    String msg1, msg2;
+    double distancia;
+    MatrizAdya(this.msg1,this.msg2,this.distancia);
+}

@@ -15,6 +15,7 @@ class _MyHomeState extends State<MyHome> {
   List<ModeloNodo> vNodo = [];
   List<ModeloArco> vArco = [];
   List<ModeloArcoCircular> cArco = [];
+  List<MatrizAdya> Rmatriz = [];
 
   int nruNodo = 1;
   int modo = -1;
@@ -45,10 +46,12 @@ class _MyHomeState extends State<MyHome> {
               onPanDown: (ubi) {
                 setState(() {
                   if (modo == 1) {
-                    vNodo.add(ModeloNodo(
-                        ubi.globalPosition.dx, ubi.globalPosition.dy, 25,
-                        nruNodo.toString()));
-                    nruNodo++;
+                    addEtiquetaNodo(ubi);
+                    // addEtiquetaNodo(context).then((etiqueta){
+                    //   vNodo.add(ModeloNodo(
+                    //       ubi.globalPosition.dx, ubi.globalPosition.dy, 25,
+                    //       nruNodo.toString()));
+                    // });
                   } else {
                     if (modo == 3) {
                       int pos = BuscaNodo(
@@ -60,11 +63,20 @@ class _MyHomeState extends State<MyHome> {
                         } else {
                           double r = double.parse(_nodo);
                           vArco.add(ModeloArco(nodopartida, vNodo[pos], r));
-                          llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
+                          //llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
+
+
+                          String msg1 = nodopartida.msg;
+                          String msg2 = vNodo[pos].msg;
+
                           nodopartida = vNodo[pos];
                           openDialogo();
-                          llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
+                          //llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
                           nodopartida = vNodo[pos];
+
+                          Rmatriz.add(MatrizAdya(msg1, msg2, r));
+
+
                         }
                       }
                     }
@@ -72,22 +84,40 @@ class _MyHomeState extends State<MyHome> {
                     if (modo == 4) {
                       int pos = BuscaNodo(
                           ubi.globalPosition.dx, ubi.globalPosition.dy);
-                      nodopartida = vNodo[pos];
-                      double r = 5000;
-                      cArco.add(ModeloArcoCircular(nodopartida,nodopartida, 0, r));
-                      llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
-                      nodopartida = vNodo[pos];
-                      
+                      arcoAuto(ubi, pos);
 
                     } else {
                       if (modo == 5) {
                         nruNodo = 0;
                         vArco.clear();
                         vNodo.clear();
-                        cArco.clear(); 
+                        cArco.clear();
                         re.clear();
+                      }else{
+                        if (modo == 6){
+                          /*print("MATRIZ");
+                          Rmatriz.forEach((element) {print(element.msg1 + " | "  + element.msg2 +  " | " + element.distancia.toString() + "\n" + element.msg2 + " | "  + element.msg1 +  " | " + element.distancia.toString());});
+                        */
+                          String mmt = "";
+                          print("MATRIZ");
+                          for (int i = 0; i < Rmatriz.length; i+=1 )
+                            {
+                              mmt += Rmatriz.elementAt(i).msg1 + " | ";
+                              for (int x = 0; x < Rmatriz.length ; x+=1)
+                                {
+                                  if (Rmatriz.elementAt(i).msg1 == Rmatriz.elementAt(x).msg1 || Rmatriz.elementAt(i).msg1 == Rmatriz.elementAt(x).msg2  )
+                                    mmt += " | " + Rmatriz.elementAt(x).distancia.toString() ;
+                                  else
+                                    mmt += " | " + "0";
+                                }
+                              mmt += "\n";
+                            }
+                          print(mmt);
+                        }
+
                       }
                     }
+
                   }
                 });
               },
@@ -153,6 +183,14 @@ class _MyHomeState extends State<MyHome> {
                   },
                   icon: Icon(Icons.block,
                       color: (modo == 5) ? Colors.green : Colors.red)),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      modo = 6;
+                    });
+                  },
+                  icon: Icon(Icons.app_registration_rounded,
+                      color: (modo == 6) ? Colors.green : Colors.red)),
 
             ],
           ),
@@ -176,6 +214,88 @@ class _MyHomeState extends State<MyHome> {
     }
     return pos;
   }
+
+  Future<String?> arcoAuto(ubi, pos) =>
+      showDialog<String>(
+          context: context,
+          builder: (context) =>
+              AlertDialog(
+                title: Text('Arco auto referido'),
+                content: TextField(
+                  autofocus: true,
+                  decoration: InputDecoration(hintText: 'Valor de arco'),
+                  keyboardType: TextInputType.number,
+                  controller: nodos,
+                ),
+                actions: [
+                  TextButton(
+                      child: Text('Cancelar'),
+                      onPressed:() {
+                        setState(() {
+                          Navigator.of(context).pop(nodos.text.toString());
+                        });
+                      }
+                  ),
+                  TextButton(
+                      child: Text('Crear arco'),
+                      onPressed:() {
+                        setState(() {
+                          nodopartida = vNodo[pos];
+                          double r = 5000;
+                          cArco.add(ModeloArcoCircular(nodopartida,nodopartida, double.parse(nodos.text), r));
+                          //  llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
+                          nodopartida = vNodo[pos];
+                          // llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
+                          nodopartida = vNodo[pos];
+                          nodos.text="";
+                          Navigator.of(context).pop(nodos.text.toString());
+                        });
+                      }
+                  ),
+                ],
+              )
+      );
+
+
+
+
+
+Future<String?> addEtiquetaNodo(ubi) =>
+
+    showDialog<String>(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: Text('Etiqueta de nodo'),
+            content: TextField(
+              autofocus: true,
+              decoration: InputDecoration(hintText: 'Ingrese etiqueta'),
+              keyboardType: TextInputType.number,
+              controller: nodos,
+            ),
+            actions: [
+              TextButton(
+                  child: Text('Cancelar'),
+                  onPressed:() {
+                    setState(() {
+                      Navigator.of(context).pop(nodos.text.toString());
+                    });
+                  }
+              ),
+              TextButton(
+                child: Text('Crear nodo'),
+                onPressed:() {
+                  setState(() {
+                    vNodo.add(ModeloNodo(
+                    ubi.globalPosition.dx, ubi.globalPosition.dy, 25, nodos.text.toString()));
+                    nodos.text="";
+                    Navigator.of(context).pop(nodos.text.toString());
+                  });
+                }
+              ),
+            ],
+            )
+    );
 
 
 
@@ -216,7 +336,56 @@ class _MyHomeState extends State<MyHome> {
             ),
       );
 
- 
+  Future<String?> camino_inicio() =>
+      showDialog<String>(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+              title: Text('Punto inicial: '),
+              content: TextField(
+                autofocus: true,
+                decoration: InputDecoration(hintText: '` inicio de la ruta`'),
+                keyboardType: TextInputType.number,
+                controller: inicio,
+              ),
+              actions: [
+                TextButton(
+                  child: Text('Nuevo dato'),
+                  onPressed: () {
+                    setState(() {
+                      Navigator.of(context).pop();
+                      _in = inicio.text;
+                    });
+                  },
+                ),
+              ],
+            ),
+      );
+  Future<String?> camino_fin() =>
+      showDialog<String>(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+              title: Text('Punto Final: '),
+              content: TextField(
+                autofocus: true,
+                decoration: InputDecoration(hintText: '`fin de la ruta`'),
+                keyboardType: TextInputType.number,
+                controller: fin,
+              ),
+              actions: [
+                TextButton(
+                  child: Text('Nuevo dato'),
+                  onPressed: () {
+                    setState(() {
+                      Navigator.of(context).pop();
+                      _fi = fin.text;
+                    });
+                  },
+                ),
+              ],
+            ),
+      );
 
 
 }
