@@ -13,8 +13,8 @@ class ModeloArco{
 }
 class ModeloArcoCircular{
     ModeloNodo nodopartida,nodollegada;
-    double distancia,r;
-    ModeloArcoCircular(this.nodopartida,this.nodollegada, this.distancia, this.r);
+    double distancia;
+    ModeloArcoCircular(this.nodopartida,this.nodollegada, this.distancia);
 }
 
 class MatrizAdya{

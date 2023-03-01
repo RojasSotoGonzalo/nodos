@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'Modelos.dart';
 import 'graficos.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
+
 class MyHome extends StatefulWidget {
   @override
   _MyHomeState createState() => _MyHomeState();
@@ -45,92 +48,86 @@ class _MyHomeState extends State<MyHome> {
             GestureDetector(
               onPanDown: (ubi) {
                 setState(() {
-                  if (modo == 1) {
-                    addEtiquetaNodo(ubi);
-                    // addEtiquetaNodo(context).then((etiqueta){
-                    //   vNodo.add(ModeloNodo(
-                    //       ubi.globalPosition.dx, ubi.globalPosition.dy, 25,
-                    //       nruNodo.toString()));
-                    // });
-                  } else {
-                    if (modo == 3) {
-                      int pos = BuscaNodo(
-                          ubi.globalPosition.dx, ubi.globalPosition.dy);
-                      if (pos >= 0) {
-                        if (nodopartida.x == -1) {
-                          nodopartida = vNodo[pos];
-                          openDialogo();
-                        } else {
-                          double r = double.parse(_nodo);
-                          vArco.add(ModeloArco(nodopartida, vNodo[pos], r));
-                          //llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
+                  switch(modo) {
+                    // CREAR NODO Y AÑADE ETIQUETA
+                    case 1: {
+                      crearNodo(ubi);
+
+                    }
+                    break;
+                    // NO SE SABE COMO SE MUEVE EL NODO
+                    case 2: {
+                      //statements;
+                    }
+                    break;
+
+                    // CREAR ARCO Y ETIQUETA DE PESO
+                    case 3: {
+                      int pos = BuscaNodo(ubi.globalPosition.dx, ubi.globalPosition.dy);
 
 
-                          String msg1 = nodopartida.msg;
-                          String msg2 = vNodo[pos].msg;
+                      if (pos >= 0 && nodopartida.x == - 1) {
+                        nodopartida = vNodo[pos];
+                        openDialogo();
+                      }
+                      else if (pos >= 0 && nodopartida.x != - 1) {
+                        openDialogo();
+                        double r = double.parse(_nodo);
+                        vArco.add(ModeloArco(nodopartida, vNodo[pos], r));
 
-                          nodopartida = vNodo[pos];
-                          openDialogo();
-                          //llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
-                          nodopartida = vNodo[pos];
+                        String msg1 = nodopartida.msg;
+                        String msg2 = vNodo[pos].msg;
 
-                          Rmatriz.add(MatrizAdya(msg1, msg2, r));
+                        nodopartida = vNodo[pos];
 
+                        //llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
+                        nodopartida = vNodo[pos];
 
-                        }
+                        Rmatriz.add(MatrizAdya(msg1, msg2, r));
                       }
                     }
+                    break;
 
-                    if (modo == 4) {
+
+                    // CREAR ARTO REFERENCIADO Y ETIQUETA DE PESO
+                    case 4: {
                       int pos = BuscaNodo(
                           ubi.globalPosition.dx, ubi.globalPosition.dy);
                       arcoAuto(ubi, pos);
 
-                    } else {
-                      if (modo == 5) {
-                        nruNodo = 0;
-                        vArco.clear();
-                        vNodo.clear();
-                        cArco.clear();
-                        re.clear();
-                      }else{
-                        if (modo == 6){
-                          /*print("MATRIZ");
-                          Rmatriz.forEach((element) {print(element.msg1 + " | "  + element.msg2 +  " | " + element.distancia.toString() + "\n" + element.msg2 + " | "  + element.msg1 +  " | " + element.distancia.toString());});
-                        */
-                          String mmt = "";
-                          print("MATRIZ");
-                          for (int i = 0; i < Rmatriz.length; i+=1 )
-                            {
-                              mmt += Rmatriz.elementAt(i).msg1 + " | ";
-                              for (int x = 0; x < Rmatriz.length ; x+=1)
-                                {
-                                  if (Rmatriz.elementAt(i).msg1 == Rmatriz.elementAt(x).msg1 || Rmatriz.elementAt(i).msg1 == Rmatriz.elementAt(x).msg2  )
-                                    mmt += " | " + Rmatriz.elementAt(x).distancia.toString() ;
-                                  else
-                                    mmt += " | " + "0";
-                                }
-                              mmt += "\n";
-                            }
-                          print(mmt);
-                        }
-
-                      }
                     }
+                    break;
 
+
+                    case 5: {
+                      nruNodo = 0;
+                      vArco.clear();
+                      vNodo.clear();
+                      cArco.clear();
+                      re.clear();
+                    }
+                    break;
+
+                    // MATRIZ ADYACENTE
+                    case 6: {
+
+                    }
+                    break;
                   }
                 });
               },
               onPanUpdate: (ubi) {
                 setState(() {
-                  if (modo == 2) {
-                    int pos = BuscaNodo(
-                        ubi.globalPosition.dx, ubi.globalPosition.dy);
-                    if (pos >= 0) {
+                  switch (modo)
+                  {
+                    // MOVIMIENTO DE NODO
+                    case 2:{
+                      int pos = BuscaNodo(ubi.globalPosition.dx, ubi.globalPosition.dy);
                       print('Esta dentro el Nodo Pos..$pos');
                       vNodo[pos].x = ubi.globalPosition.dx;
                       vNodo[pos].y = ubi.globalPosition.dy;
                     }
+                    break;
                   }
                 });
               },
@@ -215,8 +212,8 @@ class _MyHomeState extends State<MyHome> {
     return pos;
   }
 
-  Future<String?> arcoAuto(ubi, pos) =>
-      showDialog<String>(
+  Future<void> arcoAuto(ubi, pos) =>
+      showDialog<void>(
           context: context,
           builder: (context) =>
               AlertDialog(
@@ -232,7 +229,8 @@ class _MyHomeState extends State<MyHome> {
                       child: Text('Cancelar'),
                       onPressed:() {
                         setState(() {
-                          Navigator.of(context).pop(nodos.text.toString());
+                         // Navigator.of(context).pop(nodos.text.toString());
+                          Navigator.of(context).pop();
                         });
                       }
                   ),
@@ -241,8 +239,8 @@ class _MyHomeState extends State<MyHome> {
                       onPressed:() {
                         setState(() {
                           nodopartida = vNodo[pos];
-                          double r = 5000;
-                          cArco.add(ModeloArcoCircular(nodopartida,nodopartida, double.parse(nodos.text), r));
+
+                          cArco.add(ModeloArcoCircular(nodopartida,nodopartida, double.parse(nodos.text)));
                           //  llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
                           nodopartida = vNodo[pos];
                           // llena(double.parse(nodopartida.msg.toString()), double.parse(vNodo[pos].msg.toString()), r);
@@ -256,47 +254,68 @@ class _MyHomeState extends State<MyHome> {
               )
       );
 
-
-
-
-
-Future<String?> addEtiquetaNodo(ubi) =>
-
-    showDialog<String>(
-      context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text('Etiqueta de nodo'),
-            content: TextField(
-              autofocus: true,
-              decoration: InputDecoration(hintText: 'Ingrese etiqueta'),
-              keyboardType: TextInputType.number,
-              controller: nodos,
-            ),
-            actions: [
-              TextButton(
-                  child: Text('Cancelar'),
-                  onPressed:() {
-                    setState(() {
-                      Navigator.of(context).pop(nodos.text.toString());
-                    });
-                  }
-              ),
-              TextButton(
-                child: Text('Crear nodo'),
-                onPressed:() {
-                  setState(() {
-                    vNodo.add(ModeloNodo(
-                    ubi.globalPosition.dx, ubi.globalPosition.dy, 25, nodos.text.toString()));
-                    nodos.text="";
-                    Navigator.of(context).pop(nodos.text.toString());
-                  });
-                }
-              ),
-            ],
-            )
-    );
-
+  Future<void> crearNodo(ubi) =>
+      showDialog<void>(
+          context: context,
+          builder: (context) =>
+              AlertDialog(
+                title: Text('Etiqueta de nodo'),
+                content: TextField(
+                  autofocus: true,
+                  decoration: InputDecoration(hintText: 'Ingrese etiqueta'),
+                  keyboardType: TextInputType.number,
+                  controller: nodos,
+                ),
+                actions: [
+                  TextButton(
+                      child: Text('Cancelar'),
+                      onPressed:() {
+                        setState(() {
+                          Navigator.of(context).pop(nodos.text.toString());
+                        });
+                      }
+                  ),
+                  TextButton(
+                      child: Text('Crear nodo'),
+                      onPressed:() {
+                        setState(() {
+                          bool flag = true;
+                          if (vNodo.length == 0)
+                            {
+                              vNodo.add(ModeloNodo(
+                                  ubi.globalPosition.dx, ubi.globalPosition.dy, 25, nodos.text.toString()));
+                            }
+                          else{
+                            vNodo.forEach((element) {
+                              if (nodos.text.toString() == element.msg)
+                                {
+                                  flag = false;
+                                }
+                            });
+                            if (flag){
+                              vNodo.add(ModeloNodo(
+                                  ubi.globalPosition.dx, ubi.globalPosition.dy, 25, nodos.text.toString()));
+                            }
+                            else{
+                              Fluttertoast.showToast(
+                                  msg: "Nodo Repetido",
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 3,
+                                  backgroundColor: Colors.grey[800],
+                                  textColor: Colors.white,
+                                  fontSize: 16.0
+                              );
+                            }
+                          }
+                          nodos.text="";
+                          Navigator.of(context).pop();
+                        });
+                      }
+                  ),
+                ],
+              )
+      );
 
 
   void llena(double a, double b, double c) {

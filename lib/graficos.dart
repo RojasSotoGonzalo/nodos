@@ -5,6 +5,7 @@ import 'dart:math' as math;
 class DibujaNodo extends CustomPainter{
   List<ModeloNodo> vNodo;
 
+  // CONSTRUCTOR
   DibujaNodo(this.vNodo);
 
   aviso(x,y,msg,canvas){
@@ -28,13 +29,13 @@ class DibujaNodo extends CustomPainter{
     textPainter.paint(canvas, offset);
   }
 
-
+// DIBUJAR NODO Y ETIQUETA
   @override
   void paint(Canvas canvas, Size size) {
     // TODO: implement paint
     Paint lapizPintura = Paint()
-        ..style = PaintingStyle.fill
-        ..color = Colors.amber.shade400;
+      ..style = PaintingStyle.fill
+      ..color = Colors.amber.shade400;
     Paint lapizborde = Paint()
       ..style = PaintingStyle.stroke
       ..color = Colors.amber.shade400
@@ -58,7 +59,6 @@ class DibujaNodo extends CustomPainter{
       );
       textPainter.layout(minWidth: 0, maxWidth: 500);
       final textSize = textPainter.size;
-      print(textSize);
       textPainter.paint(
         canvas,
         Offset(x - (textSize.width) / 2,y-50),
@@ -66,7 +66,7 @@ class DibujaNodo extends CustomPainter{
     }
 
     vNodo.forEach((element) {
-      canvas.drawCircle(Offset(element.x, element.y), element.r, lapizPintura);
+      //canvas.drawCircle(Offset(element.x, element.y), element.r, lapizPintura);
       canvas.drawCircle(Offset(element.x, element.y), element.r, lapizborde);
       pintarEtiqueta(canvas,element.msg, element.x, element.y);
 
@@ -116,7 +116,7 @@ class DibujaArco extends CustomPainter{
       ..color = Color.fromARGB(255, 38, 83, 126);
     arco.forEach((element) {
       canvas.drawLine(Offset(element.nodopartida.x,element.nodopartida.y), Offset(element.nodollegada.x,element.nodollegada.y), lapiz);
-      double x1=((element.nodollegada.x.toDouble()+element.nodopartida.x.toDouble())/2).abs();
+      double x1=((element.nodollegada.x.toDouble() +element.nodopartida.x.toDouble())/2).abs();
       double y1=((element.nodollegada.y.toDouble()+element.nodopartida.y.toDouble())/2).abs();
       aviso(x1, y1, element.distancia.toString(), canvas);
     });
@@ -135,10 +135,10 @@ class DibujaArcoCiruclar extends CustomPainter{
   @override
   void aviso(x,y,msg,canvas){
     final textStyle = TextStyle(
-        color: Color.fromARGB(255, 38, 83, 126),
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        fontStyle: FontStyle.italic,
+      color: Color.fromARGB(255, 38, 83, 126),
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      fontStyle: FontStyle.italic,
     );
 
     final testSpan = TextSpan(
@@ -160,41 +160,41 @@ class DibujaArcoCiruclar extends CustomPainter{
   DibujaArcoCiruclar(this.arco);
   @override
   void paint(Canvas canvas, Size size) {
-      arco.forEach((element) {
-        final Rect forma = Rect.fromLTWH(element.nodopartida.x+1.5,element.nodopartida.y-17,35, 35);
-        final double angIni = -math.pi / 2;
-        final double angFin = math.pi;
-        final lapiz = Paint()
-            ..color = Color.fromARGB(255, 38, 83, 126)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 4;
+    arco.forEach((element) {
+      final Rect forma = Rect.fromLTWH(element.nodopartida.x+1.5,element.nodopartida.y-17,35, 35);
+      final double angIni = -math.pi / 2;
+      final double angFin = math.pi;
+      final lapiz = Paint()
+        ..color = Color.fromARGB(255, 38, 83, 126)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 4;
 
-        canvas.drawArc(forma, angIni ,angFin, false, lapiz);
+      canvas.drawArc(forma, angIni ,angFin, false, lapiz);
 
-        double x1=((element.nodollegada.x.toDouble()+element.nodopartida.x.toDouble())/2).abs();
-        double y1=((element.nodollegada.y.toDouble()+element.nodopartida.y.toDouble())/2).abs();
-        aviso(x1 + 50, y1, element.distancia.toString(), canvas);
+      double x1=((element.nodollegada.x.toDouble()+element.nodopartida.x.toDouble())/2).abs();
+      double y1=((element.nodollegada.y.toDouble()+element.nodopartida.y.toDouble())/2).abs();
+      aviso(x1 + 50, y1, element.distancia.toString(), canvas);
 
-        final p1 = Offset(element.nodopartida.x, element.nodopartida.y);
-        final p2 = Offset(element.nodollegada.x.toDouble() + 10,element.nodollegada.y.toDouble() + 18);
+      final p1 = Offset(element.nodopartida.x, element.nodopartida.y);
+      final p2 = Offset(element.nodollegada.x.toDouble() + 10,element.nodollegada.y.toDouble() + 18);
 
-        final angulo = angFin - 0.1;// ANGULO DE FLECHA
-        final sizeFlecha = 13;// TAMAÑO DE FLECHA
-        final anguloFlechaFinal =  25 * math.pi / 180;
+      final angulo = angFin - 0.1;// ANGULO DE FLECHA
+      final sizeFlecha = 13;// TAMAÑO DE FLECHA
+      final anguloFlechaFinal =  25 * math.pi / 180;
 
-        final path = Path();
+      final path = Path();
 
-        path.moveTo(p2.dx - sizeFlecha * math.cos(angulo - anguloFlechaFinal),
-            p2.dy - sizeFlecha * math.sin(angulo - anguloFlechaFinal));
-        path.lineTo(p2.dx, p2.dy);
-        path.lineTo(p2.dx - sizeFlecha * math.cos(angulo + anguloFlechaFinal),
-            p2.dy - sizeFlecha * math.sin(angulo + anguloFlechaFinal));
+      path.moveTo(p2.dx - sizeFlecha * math.cos(angulo - anguloFlechaFinal),
+          p2.dy - sizeFlecha * math.sin(angulo - anguloFlechaFinal));
+      path.lineTo(p2.dx, p2.dy);
+      path.lineTo(p2.dx - sizeFlecha * math.cos(angulo + anguloFlechaFinal),
+          p2.dy - sizeFlecha * math.sin(angulo + anguloFlechaFinal));
 
-        final flecha = Paint()
-          ..color = Color.fromARGB(255, 38, 83, 126)
-          ..strokeWidth = 2;
-        path.close();
-        canvas.drawPath(path, flecha);
+      final flecha = Paint()
+        ..color = Color.fromARGB(255, 38, 83, 126)
+        ..strokeWidth = 2;
+      path.close();
+      canvas.drawPath(path, flecha);
     });
   }
   @override
