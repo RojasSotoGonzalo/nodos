@@ -1,24 +1,20 @@
-
-
 class ModeloNodo{
-    double x,y,r;
-    String msg;
-    ModeloNodo(this.x, this.y, this.r,this.msg);
+  double x,y; // COORDENADAS
+  String msg; // ETOQIETA NODO
+  ModeloNodo(this.x, this.y,this.msg);
+
+  String toStringPrint(){
+      return "Coordenadas: ($x,$y) || Mensaje: $msg";
+  }
 }
+
 class ModeloArco{
-    ModeloNodo nodopartida,nodollegada;
-    double distancia;
-    ModeloArco(this.nodopartida,this.nodollegada, this.distancia);
+  ModeloNodo nodopartida,nodollegada;// NODOS DE RECORRIDO
+  double distancia; // PESO DEL ARCO
+  int flag; // CONTROL DIBUJO (flag == 0 (LOOP); flag == 1(SENCILLO); flag == 2(DOBLE)
+  ModeloArco(this.nodopartida,this.nodollegada, this.distancia, this.flag );
 
-}
-class ModeloArcoCircular{
-    ModeloNodo nodopartida,nodollegada;
-    double distancia,r;
-    ModeloArcoCircular(this.nodopartida,this.nodollegada, this.distancia, this.r);
-}
-
-class MatrizAdya{
-    String msg1, msg2;
-    double distancia;
-    MatrizAdya(this.msg1,this.msg2,this.distancia);
+  String toStringPrint(){
+    return "Nodo Partida : (${nodopartida.msg}) || Nodo Llegada: (${nodollegada.msg}) || Distancia: (${distancia}) || Flag: (${flag}";
+  }
 }
