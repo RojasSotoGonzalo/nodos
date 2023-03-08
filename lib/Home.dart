@@ -182,6 +182,20 @@ class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin {
                         }
                         print(header);
                         print(mt);
+                        AlertDialog(
+                          title: const Text("Matriz Es:"),
+                          content: Text('${header}' + '${mt}'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
                       } else {
                         customToast("Agrege nodos para generar la matriz");
                       }
